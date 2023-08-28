@@ -102,7 +102,9 @@ export function postQuiz(formValues) {
     // - Dispatch the correct message to the the appropriate state
     // - Dispatch the resetting of the form
     axios.post(postQuiz_URL, quiz).then((res) => {
-      dispatch(setMessage(res.statusText));
+      console.log(res);
+      const message = `Congrats: "${res.data.question}" is a great question!`;
+      dispatch(setMessage(message));
       dispatch(resetForm());
     });
   };

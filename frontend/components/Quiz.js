@@ -72,6 +72,7 @@ function Quiz(props) {
               onClick={() =>
                 props.postAnswer(props.quiz.quiz_id, props.selected)
               }
+              {...(props.selected ? null : { disabled: true })}
             >
               Submit answer
             </button>
