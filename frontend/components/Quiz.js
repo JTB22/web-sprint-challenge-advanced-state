@@ -1,6 +1,11 @@
 import React from "react";
 import { connect } from "react-redux";
-import { setQuiz, fetchQuiz, selectAnswer } from "../state/action-creators";
+import {
+  setQuiz,
+  fetchQuiz,
+  selectAnswer,
+  postAnswer,
+} from "../state/action-creators";
 
 function Quiz(props) {
   if (!props.quiz) {
@@ -62,7 +67,12 @@ function Quiz(props) {
               </div>
             </div>
 
-            <button id="submitAnswerBtn" onClick={() => props.setQuiz(null)}>
+            <button
+              id="submitAnswerBtn"
+              onClick={() =>
+                props.postAnswer(props.quiz.quiz_id, props.selected)
+              }
+            >
               Submit answer
             </button>
           </>
@@ -81,6 +91,9 @@ const mapStateToProps = (state) => {
   };
 };
 
-export default connect(mapStateToProps, { setQuiz, fetchQuiz, selectAnswer })(
-  Quiz
-);
+export default connect(mapStateToProps, {
+  setQuiz,
+  fetchQuiz,
+  selectAnswer,
+  postAnswer,
+})(Quiz);

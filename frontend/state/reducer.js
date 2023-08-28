@@ -5,6 +5,9 @@ import {
   MOVE_COUNTERCLOCKWISE,
   SET_QUIZ_INTO_STATE,
   SET_SELECTED_ANSWER,
+  SET_INFO_MESSAGE,
+  RESET_FORM,
+  INPUT_CHANGE,
 } from "./action-types";
 
 const initialWheelState = 0;
@@ -41,7 +44,12 @@ function selectedAnswer(state = initialSelectedAnswerState, action) {
 
 const initialMessageState = "";
 function infoMessage(state = initialMessageState, action) {
-  return state;
+  switch (action.type) {
+    case SET_INFO_MESSAGE:
+      return action.payload;
+    default:
+      return state;
+  }
 }
 
 const initialFormState = {
@@ -50,7 +58,17 @@ const initialFormState = {
   newFalseAnswer: "",
 };
 function form(state = initialFormState, action) {
-  return state;
+  switch (action.type) {
+    case RESET_FORM:
+      return initialFormState;
+    case INPUT_CHANGE:
+      return {
+        ...state,
+        [action.payload.id]: action.payload.value,
+      };
+    default:
+      return state;
+  }
 }
 
 export default combineReducers({

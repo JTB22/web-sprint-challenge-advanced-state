@@ -4,7 +4,7 @@ import axios from "axios";
 
 const getQuiz_URL = "http://localhost:9000/api/quiz/next";
 const postAnswer_URL = "http://localhost:9000/api/quiz/answer";
-const postQuiz_URL = "http://localhost:9000/api/quiz";
+const postQuiz_URL = "http://localhost:9000/api/quiz/new";
 
 export function moveClockwise() {
   return {
@@ -25,7 +25,12 @@ export function selectAnswer(id) {
   };
 }
 
-export function setMessage() {}
+export function setMessage(data) {
+  return {
+    type: "SET_INFO_MESSAGE",
+    payload: data,
+  };
+}
 
 export function setQuiz(data) {
   return {
@@ -34,9 +39,18 @@ export function setQuiz(data) {
   };
 }
 
-export function inputChange() {}
+export function inputChange(id, value) {
+  return {
+    type: "INPUT_CHANGE",
+    payload: { id, value },
+  };
+}
 
-export function resetForm() {}
+export function resetForm() {
+  return {
+    type: "RESET_FORM",
+  };
+}
 
 // ❗ Async action creators
 export function fetchQuiz() {
@@ -55,19 +69,42 @@ export function fetchQuiz() {
       });
   };
 }
-export function postAnswer() {
+export function postAnswer(quiz_id, answer_id) {
+  const answer = {
+    quiz_id: quiz_id,
+    answer_id: answer_id,
+  };
   return function (dispatch) {
     // On successful POST:
     // - Dispatch an action to reset the selected answer state
     // - Dispatch an action to set the server message to state
     // - Dispatch the fetching of the next quiz
+    axios
+      .post(postAnswer_URL, answer)
+      .then((res) => {
+        dispatch(selectAnswer(null));
+        dispatch(setMessage(res.data.message));
+        dispatch(fetchQuiz());
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   };
 }
-export function postQuiz() {
+export function postQuiz(formValues) {
+  const quiz = {
+    question_text: formValues.newQuestion,
+    true_answer_text: formValues.newTrueAnswer,
+    false_answer_text: formValues.newFalseAnswer,
+  };
   return function (dispatch) {
     // On successful POST:
     // - Dispatch the correct message to the the appropriate state
     // - Dispatch the resetting of the form
+    axios.post(postQuiz_URL, quiz).then((res) => {
+      dispatch(setMessage(res.statusText));
+      dispatch(resetForm());
+    });
   };
 }
 // ❗ On promise rejections, use log statements or breakpoints, and put an appropriate error message in state

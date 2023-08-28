@@ -1,6 +1,6 @@
 import React from "react";
 import { connect } from "react-redux";
-import * as actionCreators from "../state/action-creators";
+import { postQuiz, inputChange } from "../state/action-creators";
 
 export function Form(props) {
   const onChange = (evt) => {
@@ -9,7 +9,7 @@ export function Form(props) {
 
   const onSubmit = (evt) => {
     evt.preventDefault();
-    props.postQuiz();
+    props.postQuiz(props);
   };
 
   return (
@@ -33,11 +33,19 @@ export function Form(props) {
         id="newFalseAnswer"
         placeholder="Enter false answer"
       />
-      <button id="submitNewQuizBtn" onClick={() => onSubmit()}>
+      <button id="submitNewQuizBtn" onClick={(e) => onSubmit(e)}>
         Submit new quiz
       </button>
     </form>
   );
 }
 
-export default connect((st) => st, actionCreators)(Form);
+const mapStateToProps = (st) => {
+  return {
+    newQuestion: st.form.newQuestion,
+    newTrueAnswer: st.form.newTrueAnswer,
+    newFalseAnswer: st.form.newFalseAnswer,
+  };
+};
+
+export default connect(mapStateToProps, { postQuiz, inputChange })(Form);
